@@ -9,7 +9,7 @@ Methods:
     deploy(): do_packs && do_deploys
     do_clean(n=0): removes old versions and keeps n (or 1) newest versions only
 Usage:
-    fab -f 3-deploy_web_static.py do_clean:n=2 -i my_ssh_private_key -u ubuntu
+    fab -f 3-deploy_web_static.py do_clean:n=2 -i ~/.ssh/id_rsa -u ubuntu
 """
 
 import os.path

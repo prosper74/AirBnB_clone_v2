@@ -5,7 +5,7 @@ Fabric script methods:
     do_deploy: deploys archive to webservers
     deploy: do_packs && do_deploys
 Usage:
-    fab -f 3-deploy_web_static.py deploy -i my_ssh_private_key -u ubuntu
+    fab -f 3-deploy_web_static.py deploy -i ~/.ssh/id_rsa -u ubuntu
 """
 
 import os.path
