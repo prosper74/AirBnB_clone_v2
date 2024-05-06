@@ -1,6 +1,9 @@
 #!/usr/bin/python3
 """
-Fabric script methods:
+Fabric script that deletes out-of-date archives,
+using the function do_clean
+
+Methods:
     do_pack(): packs web_static/ files into .tgz archive
     do_deploy(archive_path): deploys archive to webservers
     deploy(): do_packs && do_deploys
@@ -8,10 +11,11 @@ Fabric script methods:
 Usage:
     fab -f 3-deploy_web_static.py do_clean:n=2 -i my_ssh_private_key -u ubuntu
 """
-from fabric.api import local, env, put, run
-from time import strftime
+
 import os.path
-env.hosts = ['35.229.54.225', '35.231.225.251']
+from time import strftime
+from fabric.api import local, env, put, run
+env.hosts = ['100.25.220.109', '100.25.199.2']
 
 
 def do_pack():
@@ -22,14 +26,12 @@ def do_pack():
         filename = "versions/web_static_{}.tgz".format(timenow)
         local("tar -cvzf {} web_static/".format(filename))
         return filename
-    except:
+    except (ValueError, IndexError):
         return None
 
 
 def do_deploy(archive_path):
-    """
-    Deploy archive to web server
-    """
+    """Deploy archive to web server"""
     if os.path.isfile(archive_path) is False:
         return False
     try:
@@ -46,11 +48,12 @@ def do_deploy(archive_path):
         run("rm -rf {}".format(symlink))
         run("ln -s {} {}".format(path_no_ext, symlink))
         return True
-    except:
+    except (ValueError, IndexError):
         return False
 
 
 def deploy():
+    """Check the deployment status of the application"""
     archive_path = do_pack()
     if archive_path is None:
         return False
@@ -59,11 +62,12 @@ def deploy():
 
 
 def do_clean(number=0):
+    """Clean up the archive directory to remove outdated files"""
     if number == 0:
         number = 1
     with cd.local('./versions'):
-            local("ls -lt | tail -n +{} | rev | cut -f1 -d" " | rev | \
+        local("ls -lt | tail -n +{} | rev | cut -f1 -d" " | rev | \
             xargs -d '\n' rm".format(1 + number))
     with cd('/data/web_static/releases/'):
-            run("ls -lt | tail -n +{} | rev | cut -f1 -d" " | rev | \
+        run("ls -lt | tail -n +{} | rev | cut -f1 -d" " | rev | \
             xargs -d '\n' rm".format(1 + number))
