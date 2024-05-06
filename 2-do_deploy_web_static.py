@@ -1,21 +1,17 @@
 #!/usr/bin/python3
+# Fabfile to distribute an archive to a web server.
 """
 Fabric script method:
     do_deploy: deploys archive to webservers
-Usage:
-    fab -f 2-do_deploy_web_static.py
-    do_deploy:archive_path=versions/web_static_20170315003959.tgz
-    -i my_ssh_private_key -u ubuntu
 """
-from fabric.api import env, put, run
+
 import os.path
-env.hosts = ['35.229.54.225', '35.231.225.251']
+from fabric.api import env, put, run
+env.hosts = ['100.25.220.109', '100.25.199.2']
 
 
 def do_deploy(archive_path):
-    """
-    Deploy archive to web server
-    """
+    """Deploy archive to web server"""
     if os.path.isfile(archive_path) is False:
         return False
     try:
@@ -32,5 +28,5 @@ def do_deploy(archive_path):
         run("rm -rf {}".format(symlink))
         run("ln -s {} {}".format(path_no_ext, symlink))
         return True
-    except:
+    except (ValueError, IndexError):
         return False
