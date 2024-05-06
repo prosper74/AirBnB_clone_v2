@@ -5,13 +5,13 @@ Fabric script methods:
     do_deploy: deploys archive to webservers
     deploy: do_packs && do_deploys
 Usage:
-    fab -f 3-deploy_web_static.py deploy -i ~/.ssh/id_rsa -u ubuntu
+    fab -f fabfile.py deploy -i ~/.ssh/id_rsa -u ubuntu
 """
 
 import os.path
 from time import strftime
 from fabric.api import local, env, put, run
-env.hosts = ['100.25.220.109', '100.25.199.2']
+env.hosts = ['100.25.134.50', '54.87.235.110']
 
 
 def do_pack():
